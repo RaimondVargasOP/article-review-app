@@ -1,75 +1,42 @@
-# React + TypeScript + Vite
+# Article Review App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A robust, client-side React application built with Vite and TypeScript for reviewing and editing articles.
 
-Currently, two official plugins are available:
+## Setup & Execution
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+To run this project locally, ensure you have Node.js installed, then execute the following commands in your terminal:
 
-## React Compiler
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-## Expanding the ESLint configuration
+3. **Run the unit tests:**
+   ```bash
+   npm run test
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Design Decisions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Strict TypeScript & Minimal State**: The project strictly avoids the use of `any`. State is kept to an absolute minimum; filtered and sorted lists, as well as dynamic dropdown options, are derived automatically during rendering using `useMemo` to prevent unnecessary re-renders.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Separation of Concerns**: Data fetching logic (simulating network latency via localStorage), reusable UI components, and application state are strictly decoupled. `useEffect` is utilized exclusively for the initial asynchronous data load and external DOM synchronization (theme toggling), never for derived values.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Controlled Forms**: The edit interface utilizes a fully controlled React form, ensuring immediate validation feedback before submission without relying on external form libraries.
 
-```
+- **Native Theming**: The Light/Dark mode feature is implemented natively using CSS variables (`:root` and `[data-theme='dark']`) toggled via React, avoiding heavy UI frameworks and maintaining a small bundle size.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Responsive CSS Grid**: The layout relies on pure CSS Grid and Flexbox for responsiveness, allowing dynamic wrapping without the need for complex media queries.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Known Limitations
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Simulated Backend**: The application relies on asynchronous localStorage interactions to simulate a database. Data will not persist across different browsers or devices.
 
-```
+- **No Pagination**: For the scope of these 15 sample articles, all filtered results are rendered on a single page. In a real-world scenario with thousands of records, virtualization or pagination would need to be implemented in the grid component.
+
+- **Authentication**: There is no user authentication or role-based access control; any user can edit the status and content of the articles.

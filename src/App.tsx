@@ -1,17 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { Article, FilterCriteria } from './types';
-import { fetchArticles, updateArticle } from './services/storage'; // <-- Agrega updateArticle
+import { fetchArticles, updateArticle } from './services/storage';
 import { FilterBar } from './components/FilterBar';
 import { ArticleCard } from './components/ArticleCard';
-import { ArticleEditForm } from './components/ArticleEditForm'; // <-- Agrega esta línea
+import { ArticleEditForm } from './components/ArticleEditForm';
 import './App.css';
-
 
 function App() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState<boolean> (true);
   const [error, setError] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
 
   const [filters, setFilters] = useState<FilterCriteria>({
     search: '',
@@ -19,6 +19,10 @@ function App() {
     status: '',
     sortBy: 'date'
   });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode])
 
   useEffect(() =>{
     let isMounted = true;
@@ -49,9 +53,6 @@ function App() {
     };
   }, []);
 
-  // Derived Data
-  // I used useMemo because it allows me to recalculate automatically the filtered list just when necessary
-  // speeding up the app
 
   const handleSaveArticle = async (updatedArticle: Article) => {
     const savedArticle = await updateArticle(updatedArticle);
@@ -64,6 +65,9 @@ function App() {
     alert("Article saved successfully!");
   };
 
+  // Derived Data
+  // I used useMemo because it allows me to recalculate automatically the filtered list just when necessary
+  // speeding up the app
 
   const availableStatuses = useMemo(() => {
     return Array.from(new Set(articles.map(a => a.status)));
@@ -136,8 +140,14 @@ function App() {
   // RENDERING
   return (
     <div className="app-container">
-      <header>
+      <header style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <h1>Article Review App</h1>
+        <button
+          className="theme-toggle-btn"
+          onClick={() => setIsDarkMode(!isDarkMode)}
+        >
+          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+        </button>
       </header>
 
       <main>

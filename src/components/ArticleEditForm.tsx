@@ -9,7 +9,6 @@ interface ArticleEditFormProps {
 
 export function ArticleEditForm({ article, onSave, onCancel }: ArticleEditFormProps) {
   const [formData, setFormData] = useState<Article>(article);
-
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
